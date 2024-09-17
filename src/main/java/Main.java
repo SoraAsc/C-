@@ -36,6 +36,10 @@ public class Main {
                     System.out.println("IGUALDADE" + "  Value= " + t.getValue());
                 else if (t.getType() == TokenType.DIFERENTEIGUAL)
                     System.out.println("DIFERENTEIGUALDADE" + "  Value= " + t.getValue());
+                else if (t.getType() == TokenType.BARRA)
+                    System.out.println("BARRA" + "  Value= " + t.getValue());
+                else if (t.getType() == TokenType.ASTERISCO)
+                    System.out.println("ASTERISCO" + "  Value= " + t.getValue());
                 else if (t.getType() == TokenType.PONTO)
                 {
                     System.out.println("PONTO" + " Value= " + t.getValue());

@@ -63,6 +63,10 @@ public class Scanner
                             return new Token(TokenType.COLCHEABERTO, tokenString.toString());
                         else if (currentChar == ']')
                             return new Token(TokenType.COLCHEFECHADO, tokenString.toString());
+                        else if (currentChar == '/')
+                            return new Token(TokenType.BARRA, tokenString.toString());
+                        else if (currentChar == '*')
+                            return new Token(TokenType.ASTERISCO, tokenString.toString());
                         else if ( (currentChar == ' '  ||
                                 currentChar == '\n' ||
                                 currentChar == '\t' ||
