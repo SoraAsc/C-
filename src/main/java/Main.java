@@ -40,6 +40,10 @@ public class Main {
                     System.out.println("BARRA" + "  Value= " + t.getValue());
                 else if (t.getType() == TokenType.ASTERISCO)
                     System.out.println("ASTERISCO" + "  Value= " + t.getValue());
+                else if (t.getType() == TokenType.INTTIPO)
+                    System.out.println("INTTIPO" + "  Value= " + t.getValue());
+                else if (t.getType() == TokenType.VOIDTIPO)
+                    System.out.println("VOIDTIPO" + "  Value= " + t.getValue());
                 else if (t.getType() == TokenType.PONTO)
                 {
                     System.out.println("PONTO" + " Value= " + t.getValue());

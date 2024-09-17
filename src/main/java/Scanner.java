@@ -77,7 +77,11 @@ public class Scanner
                         else error = true;
                         break;
                     case 1: nextChar();
-                        if(!Character.isLetterOrDigit(currentChar)) state = 2;
+                        if(tokenString.toString().equals("int"))
+                            return new Token(TokenType.INTTIPO, tokenString.toString());
+                        else if(tokenString.toString().equals("void"))
+                            return new Token(TokenType.VOIDTIPO, tokenString.toString());
+                        else if(!Character.isLetterOrDigit(currentChar)) state = 2;
                         break;
                     case 2: setBack();
                         return new Token(TokenType.IDENT, tokenString.toString());
