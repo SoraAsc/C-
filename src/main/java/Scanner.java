@@ -55,10 +55,18 @@ public class Scanner
                         else if (currentChar == '<') state = 8;
                         else if (currentChar == '=') state = 11;
                         else if (currentChar == '!') state = 12;
+                        else if (currentChar == ',')
+                            return new Token(TokenType.VIRGULA, tokenString.toString());
                         else if (currentChar == '(')
                             return new Token(TokenType.PARABERTO, tokenString.toString());
                         else if (currentChar == ')')
                             return new Token(TokenType.PARFECHADO, tokenString.toString());
+                        else if (currentChar == '{')
+                            return new Token(TokenType.CHAVEABERTO, tokenString.toString());
+                        else if (currentChar == ';')
+                            return new Token(TokenType.PONTOVIRGULA, tokenString.toString());
+                        else if (currentChar == '}')
+                            return new Token(TokenType.CHAVEFECHADO, tokenString.toString());
                         else if (currentChar == '[')
                             return new Token(TokenType.COLCHEABERTO, tokenString.toString());
                         else if (currentChar == ']')
@@ -81,6 +89,14 @@ public class Scanner
                             return new Token(TokenType.INTTIPO, tokenString.toString());
                         else if(tokenString.toString().equals("void"))
                             return new Token(TokenType.VOIDTIPO, tokenString.toString());
+                        else if(tokenString.toString().equals("return"))
+                            return new Token(TokenType.RETURN, tokenString.toString());
+                        else if(tokenString.toString().equals("while"))
+                            return new Token(TokenType.WHILE, tokenString.toString());
+                        else if(tokenString.toString().equals("if"))
+                            return new Token(TokenType.IF, tokenString.toString());
+                        else if(tokenString.toString().equals("else"))
+                            return new Token(TokenType.ELSE, tokenString.toString());
                         else if(!Character.isLetterOrDigit(currentChar)) state = 2;
                         break;
                     case 2: setBack();

@@ -1,15 +1,17 @@
 import java.io.FileInputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Main {
 
     public static void main(String[] args) {
         try{
-//            FileInputStream file = new FileInputStream("C:/compilers/example1.txt");
             String local = System.getProperty("user.dir") + "\\example1.txt";
             FileInputStream file = new FileInputStream(local);
             Token t;
 
             Scanner l =  new Scanner(file);
+            List<Token> tokens = new ArrayList<>();
             while ( (t = l.lex()) != null)
             {
                 if (t.getType() == TokenType.IDENT)
@@ -28,6 +30,10 @@ public class Main {
                     System.out.println("PARABERTO" + "  Value= " + t.getValue());
                 else if (t.getType() == TokenType.PARFECHADO)
                     System.out.println("PARFECHADO" + "  Value= " + t.getValue());
+                else if (t.getType() == TokenType.CHAVEABERTO)
+                    System.out.println("CHAVEABERTO" + "  Value= " + t.getValue());
+                else if (t.getType() == TokenType.CHAVEFECHADO)
+                    System.out.println("CHAVEFECHADO" + "  Value= " + t.getValue());
                 else if (t.getType() == TokenType.COLCHEABERTO)
                     System.out.println("COLCHEABERTO" + "  Value= " + t.getValue());
                 else if (t.getType() == TokenType.COLCHEFECHADO)
@@ -44,12 +50,27 @@ public class Main {
                     System.out.println("INTTIPO" + "  Value= " + t.getValue());
                 else if (t.getType() == TokenType.VOIDTIPO)
                     System.out.println("VOIDTIPO" + "  Value= " + t.getValue());
+                else if (t.getType() == TokenType.WHILE)
+                    System.out.println("WHILE" + "  Value= " + t.getValue());
+                else if (t.getType() == TokenType.IF)
+                    System.out.println("IF" + "  Value= " + t.getValue());
+                else if (t.getType() == TokenType.ELSE)
+                    System.out.println("ELSE" + "  Value= " + t.getValue());
+                else if (t.getType() == TokenType.RETURN)
+                    System.out.println("RETURN" + "  Value= " + t.getValue());
+                else if (t.getType() == TokenType.VIRGULA)
+                    System.out.println("VIRGULA" + " Value= " + t.getValue());
+                else if (t.getType() == TokenType.PONTOVIRGULA)
+                    System.out.println("PONTOVIRGULA" + " Value= " + t.getValue());
                 else if (t.getType() == TokenType.PONTO)
                 {
                     System.out.println("PONTO" + " Value= " + t.getValue());
                     break;
                 }
+                tokens.add(t);
             }
+            Parser parser = new Parser(tokens);
+            parser.parse();
         }
         catch (Exception e) { System.out.println("Erro abrindo o arquivo"); }
     }

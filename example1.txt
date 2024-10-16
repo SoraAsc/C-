@@ -12,5 +12,12 @@ A
 *
 int
 void
-
+,d,a
+{
+if
+else
+}
+return
+while
+;
 .
