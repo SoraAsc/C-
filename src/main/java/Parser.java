@@ -104,8 +104,8 @@ public class Parser {
         if(currentToken.getType() == TokenType.IDENT) comandoExpressao();
         else if(currentToken.getType() == TokenType.CHAVEABERTO) comandoComposto();
         else if (currentToken.getType() == TokenType.IF) comandoSelecao();
-//        else if (currentToken.getType() == TokenType.WHILE) comandoIteracao();
-//        else if (currentToken.getType() == TokenType.RETURN) comandoRetorno();
+        else if (currentToken.getType() == TokenType.WHILE) comandoIteracao();
+        else if (currentToken.getType() == TokenType.RETURN) comandoRetorno();
         else throw new Exception("Erro de sintaxe: Comando inválido.");
     }
 
@@ -127,7 +127,7 @@ public class Parser {
         //                     if (<expressão>) <comando> else <comando>
         match(TokenType.IF);
         match(TokenType.PARABERTO);
-        expressao(); // Avalia a expressão condicional
+        expressao();
         match(TokenType.PARFECHADO);
         comando();
 
@@ -137,8 +137,53 @@ public class Parser {
         }
     }
 
-    private void expressao() {
+    private void comandoIteracao() throws Exception {
+        // <comando iteração> → while (<expressão>) <comando>
+        match(TokenType.WHILE);
+        match(TokenType.PARABERTO);
+        expressao();
+        match(TokenType.PARFECHADO);
+        comando();
+    }
 
+    private void comandoRetorno() throws Exception {
+        // <comando retorno> → return; |
+        //                     return <expressão>;
+        match(TokenType.RETURN);
+        if (currentToken.getType() != TokenType.PONTOVIRGULA) expressao();
+        match(TokenType.PONTOVIRGULA);
+    }
+
+    private void expressao() throws Exception {
+        // <expressão> → <var> = <expressão simples> | <expressão simples>
+
+        if(currentToken.getType() == TokenType.IDENT)
+        {
+            var();
+            match(TokenType.IGUAL);
+            expressaoSimples();
+        } else expressaoSimples();
+    }
+
+    private void expressaoSimples() throws Exception {
+        // <expressão simples> → <expressões soma> <op relacional> <expressões soma> | <expressões soma>
+//        expressoesSoma();
+//        if (isOpRelacional(currentToken.getType())) {
+//            TokenType op = currentToken.getType();
+//            match(op); // Consome o operador relacional (>, <, <=, >=, ==, !=)
+//            expressoesSoma(); // Avalia a segunda parte da expressão relacional
+//        }
+    }
+
+    private void var() throws Exception {
+        // <var> → ident | ident [ <expressão> ]
+        match(TokenType.IDENT);
+        if(currentToken.getType() == TokenType.COLCHEABERTO)
+        {
+            match(TokenType.COLCHEABERTO);
+            expressao();
+            match(TokenType.COLCHEFECHADO);
+        }
     }
 
     private boolean isComandoToken(Token token) {
@@ -160,6 +205,11 @@ public class Parser {
         return token.getType() == TokenType.INTTIPO || token.getType() == TokenType.VOIDTIPO;
     }
 
-
+    private boolean isOpRelacional(TokenType type) {
+        // Os operadores relacionais: >, <, <=, >=, ==, !=
+        return type == TokenType.MAIOR || type == TokenType.MENOR ||
+                type == TokenType.MAIORIGUAL || type == TokenType.MENORIGUAL ||
+                type == TokenType.IGUALDADE || type == TokenType.DIFERENTEIGUAL;
+    }
 
 }

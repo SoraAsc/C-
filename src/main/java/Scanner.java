@@ -54,7 +54,7 @@ public class Scanner
                         else if (currentChar == '>') state = 5;
                         else if (currentChar == '<') state = 8;
                         else if (currentChar == '=') state = 11;
-                        else if (currentChar == '!') state = 12;
+                        else if (currentChar == '!') state = 14;
                         else if (currentChar == ',')
                             return new Token(TokenType.VIRGULA, tokenString.toString());
                         else if (currentChar == '(')
@@ -121,8 +121,13 @@ public class Scanner
                     case 10: setBack();
                         return new Token(TokenType.MENOR, tokenString.toString());
                     case 11: nextChar();
-                        if (currentChar == '=') return new Token(TokenType.IGUALDADE, tokenString.toString());
-                    case 12: nextChar();
+                        if (currentChar == '=') state = 12;
+                        else state = 13;
+                        break;
+                    case 12: return new Token(TokenType.IGUALDADE, tokenString.toString());
+                    case 13: setBack();
+                        return new Token(TokenType.IGUAL, tokenString.toString());
+                    case 14: nextChar();
                         if (currentChar == '=') return new Token(TokenType.DIFERENTEIGUAL, tokenString.toString());
                     default : error = true;
                 }
