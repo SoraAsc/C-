@@ -195,7 +195,28 @@ public class Parser {
 
     private void fator() throws Exception {
         // <fator> → ( <expressão> ) | <var> | <ativação> | contint
+        if(currentToken.getType() == TokenType.PARABERTO) {
+            match(TokenType.PARABERTO);
+            expressao();
+            match(TokenType.PARFECHADO);
+        } else if (currentToken.getType() == TokenType.IDENT) {
+            // Não usei a função var, porque há um passo intermediário entre para detectar se é var ou ativação
+            // TODO: Melhorar esse caso
+            String ident = currentToken.getValue();
+            match(TokenType.IDENT);
+            if(currentToken.getType() == TokenType.PARABERTO) ativacao(ident);
+            else if(currentToken.getType() == TokenType.COLCHEABERTO)
+            {
+                match(TokenType.COLCHEABERTO);
+                expressao();
+                match(TokenType.COLCHEFECHADO);
+            }
+        } else if (currentToken.getType() == TokenType.INTCONST)  match(TokenType.INTCONST);
+        else throw new Exception("Erro de sintaxe: Fator inválido.");
+    }
 
+    private void ativacao() throws Exception {
+        // <ativação> → ident ( <args> )
     }
 
     private void var() throws Exception {
