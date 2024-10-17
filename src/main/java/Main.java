@@ -6,11 +6,17 @@ public class Main {
 
     public static void main(String[] args) {
         List<Token> tokens = new ArrayList<>();
-        try{
-            String local = System.getProperty("user.dir") + "\\example2.txt";
-            FileInputStream file = new FileInputStream(local);
-            Token t;
+        String local = System.getProperty("user.dir") + "\\example2.txt";
+        FileInputStream file;
 
+        try {
+            System.out.println("Abrindo o arquivo...");
+            file = new FileInputStream(local);
+        } catch (Exception e) { System.err.println("Erro abrindo o arquivo"); return; }
+
+        try {
+            System.out.println("Iniciando a Análise Léxica...");
+            Token t;
             Scanner l =  new Scanner(file);
 
             while ( (t = l.lex()) != null)
@@ -76,10 +82,13 @@ public class Main {
                 }
                 tokens.add(t);
             }
-        } catch (Exception e) { System.out.println("Erro abrindo o arquivo"); }
+            System.out.println("Análise Léxica Finalizada");
+        } catch (Exception e) { System.err.println(e.getMessage()); return;}
         try {
+            System.out.println("Iniciando a Análise Sintática...");
             Parser parser = new Parser(tokens);
             parser.parse();
+            System.out.println("Análise Sintática Finalizada");
         } catch (Exception e) { System.err.println(e.getMessage()); }
     }
 }
