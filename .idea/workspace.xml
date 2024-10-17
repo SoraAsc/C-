@@ -4,9 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1e2ca180-1a48-457a-982a-ecbea56375ed" name="Changes" comment="feat: added fator function">
+    <list default="true" id="1e2ca180-1a48-457a-982a-ecbea56375ed" name="Changes" comment="feat: finished parser">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Parser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Parser.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -145,7 +144,15 @@
       <option name="project" value="LOCAL" />
       <updated>1729186677585</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="feat: finished parser">
+      <option name="closed" value="true" />
+      <created>1729190651068</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1729190651068</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -156,7 +163,8 @@
     <MESSAGE value="feat: added &quot;=&quot; token and more parser functions" />
     <MESSAGE value="feat: added expressoesSoma function and &quot;+&quot; and &quot;-&quot; token" />
     <MESSAGE value="feat: added fator function" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: added fator function" />
+    <MESSAGE value="feat: finished parser" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: finished parser" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

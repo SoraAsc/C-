@@ -1,18 +1,28 @@
-import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 public class Parser {
-    private final Iterator<Token> tokenIterator;
+    private final ListIterator<Token> tokenIterator;
     private Token currentToken;
 
     public Parser(List<Token> tokens) {
-        this.tokenIterator = tokens.iterator();
+        this.tokenIterator = tokens.listIterator();
         next();
     }
 
     private void next() {
         if(tokenIterator.hasNext()) currentToken = tokenIterator.next();
         else currentToken = null;
+    }
+
+    private Token lookAheadToken() {
+        // Se há um próximo token no iterador, olhe para ele sem consumir.
+        if (tokenIterator.hasNext()) {
+            Token current = tokenIterator.next(); // Avança e obtém o próximo token.
+            tokenIterator.previous(); // Retorna à posição anterior.
+            return current;
+        }
+        return null; // Retorna null se não há mais tokens.
     }
 
     private void match(TokenType type) throws Exception {
@@ -33,7 +43,10 @@ public class Parser {
     private void declaracoesLista() throws Exception {
         // <declarações lista> → <declarações lista> <declarações> | <declarações>
         declaracoes();
-        while (isTipoToken(currentToken)) declaracoes();
+        while (tokenIterator.hasNext() && isTipoToken(currentToken)) declaracoes();
+
+        if(currentToken != null)
+            throw new Exception("Erro de sintaxe: Esperava fim do arquivo mas encontrei " + currentToken.getType());
     }
 
     private void declaracoes() throws Exception {
@@ -41,9 +54,8 @@ public class Parser {
         if(isTipoToken(currentToken)) {
             tipo();
             match(TokenType.IDENT);
-            if(currentToken.getType() == TokenType.PARABERTO) {
-                declFunc();
-            } else declVar();
+            if(currentToken.getType() == TokenType.PARABERTO) declFunc();
+            else declVar();
         } else throw new Exception("Erro de sintaxe: Tipo esperado.");
     }
 
@@ -113,9 +125,7 @@ public class Parser {
 
     private void listaComandos() throws Exception {
         // <lista de comandos> → <comando> <lista de comandos> | ε
-        while (isComandoToken(currentToken)) {
-            comando();
-        }
+        while (isComandoToken(currentToken)) comando();
     }
 
     private void comando() throws Exception {
@@ -166,8 +176,7 @@ public class Parser {
     }
 
     private void comandoRetorno() throws Exception {
-        // <comando retorno> → return; |
-        //                     return <expressão>;
+        // <comando retorno> → return; | return <expressão>;
         match(TokenType.RETURN);
         if (currentToken.getType() != TokenType.PONTOVIRGULA) expressao();
         match(TokenType.PONTOVIRGULA);
@@ -175,8 +184,8 @@ public class Parser {
 
     private void expressao() throws Exception {
         // <expressão> → <var> = <expressão simples> | <expressão simples>
-
-        if(currentToken.getType() == TokenType.IDENT)
+        Token lookahead = lookAheadToken();
+        if(currentToken.getType() == TokenType.IDENT && lookahead != null && lookahead.getType() == TokenType.IGUAL)
         {
             var();
             match(TokenType.IGUAL);
