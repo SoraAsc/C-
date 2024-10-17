@@ -5,13 +5,14 @@ import java.util.List;
 public class Main {
 
     public static void main(String[] args) {
+        List<Token> tokens = new ArrayList<>();
         try{
-            String local = System.getProperty("user.dir") + "\\example1.txt";
+            String local = System.getProperty("user.dir") + "\\example2.txt";
             FileInputStream file = new FileInputStream(local);
             Token t;
 
             Scanner l =  new Scanner(file);
-            List<Token> tokens = new ArrayList<>();
+
             while ( (t = l.lex()) != null)
             {
                 if (t.getType() == TokenType.IDENT)
@@ -75,9 +76,13 @@ public class Main {
                 }
                 tokens.add(t);
             }
+        } catch (Exception e) { System.out.println("Erro abrindo o arquivo"); }
+        try {
             Parser parser = new Parser(tokens);
             parser.parse();
+        } catch (Exception e) {
+            e.printStackTrace();
+//            System.out.println(e.getMessage());
         }
-        catch (Exception e) { System.out.println("Erro abrindo o arquivo"); }
     }
 }

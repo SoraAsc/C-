@@ -2,14 +2,15 @@ import java.util.Iterator;
 import java.util.List;
 
 public class Parser {
-    private Iterator<Token> tokenIterator;
+    private final Iterator<Token> tokenIterator;
     private Token currentToken;
 
     public Parser(List<Token> tokens) {
         this.tokenIterator = tokens.iterator();
+        next();
     }
 
-    private  void next() {
+    private void next() {
         if(tokenIterator.hasNext()) currentToken = tokenIterator.next();
         else currentToken = null;
     }
@@ -25,28 +26,45 @@ public class Parser {
     }
 
     private void programa() throws Exception {
+        // <programa> → <declarações lista>
         declaracoesLista();
     }
 
     private void declaracoesLista() throws Exception {
         // <declarações lista> → <declarações lista> <declarações> | <declarações>
         declaracoes();
-        while (currentToken != null && isDeclaracaoToken(currentToken)) {
-            declaracoes();
-        }
+        while (isTipoToken(currentToken)) declaracoes();
     }
 
     private void declaracoes() throws Exception {
         // <declarações> → <declaração var> | <declaração func>
         if(isTipoToken(currentToken)) {
-            next(); // Consome o tipo
-            match(TokenType.IDENT); // Consome o identificador (nome da variável ou função)
+            tipo();
+            match(TokenType.IDENT);
             if(currentToken.getType() == TokenType.PARABERTO) {
-                // <declaração func> → <tipo> ident ( <par formais> ) <decl composto>
-                match(TokenType.PARABERTO);
-                parFormais();
-            }
+                declFunc();
+            } else declVar();
+        } else throw new Exception("Erro de sintaxe: Tipo esperado.");
+    }
+
+    // O tipo e o ident foram consumidos em declaracoes
+    private void declVar() throws Exception {
+        // <declaração var> → <tipo> ident ; | <tipo> ident [ contint ] ;
+        if(currentToken.getType() == TokenType.COLCHEABERTO) {
+            match(TokenType.COLCHEABERTO);
+            match(TokenType.INTCONST);  // Consome o tamanho do array (constante inteira)
+            match(TokenType.COLCHEFECHADO);
         }
+        match(TokenType.PONTOVIRGULA);
+    }
+
+    // O tipo e o ident foram consumidos em declaracoes
+    private void declFunc() throws Exception {
+        // <declaração func> → <tipo> ident ( <par formais> ) <decl composto>
+        match(TokenType.PARABERTO);
+        parFormais();
+        match(TokenType.PARFECHADO);
+        declComposto();
     }
 
     private void parFormais() throws Exception {
@@ -59,7 +77,7 @@ public class Parser {
     private void listaParFormais() throws Exception {
         // <lista par formais> → <parametro> , <lista par formais> | <parametro>
         parametro();
-        while(currentToken != null && currentToken.getType() == TokenType.VIRGULA) {
+        while(currentToken.getType() == TokenType.VIRGULA) {
             match(TokenType.VIRGULA);
             parametro();
         }
@@ -67,14 +85,12 @@ public class Parser {
 
     private void parametro() throws Exception {
         // <parametro> → <tipo> ident | <tipo> ident [ ]
-        if(isTipoToken(currentToken)) {
-            next(); // Consome o tipo
-            match(TokenType.IDENT); // Consome o identificador
-            if(currentToken.getType() == TokenType.COLCHEABERTO) {
-                match(TokenType.COLCHEABERTO);
-                match(TokenType.COLCHEFECHADO);
-            }
-        } else throw new Exception("Erro de sintaxe: Esperava tipo de parâmetro.");
+        tipo();
+        match(TokenType.IDENT);
+        if(currentToken.getType() == TokenType.COLCHEABERTO) {
+            match(TokenType.COLCHEABERTO);
+            match(TokenType.COLCHEFECHADO);
+        }
     }
 
     private void declComposto() throws Exception {
@@ -88,7 +104,10 @@ public class Parser {
     private void declaracoesLocais() throws Exception {
         // <declarações locais> → <declarações locais> <declaração var> | ε
         while (isTipoToken(currentToken)) {
-            declaracoes(); // Trata variáveis locais
+            // É necessário pois como dito anteriormente o tipo e o ident foram consumidos em declaracoes
+            tipo();
+            match(TokenType.IDENT);
+            declVar();
         }
     }
 
@@ -202,9 +221,8 @@ public class Parser {
         } else if (currentToken.getType() == TokenType.IDENT) {
             // Não usei a função var, porque há um passo intermediário entre para detectar se é var ou ativação
             // TODO: Melhorar esse caso
-            String ident = currentToken.getValue();
             match(TokenType.IDENT);
-            if(currentToken.getType() == TokenType.PARABERTO) ativacao(ident);
+            if(currentToken.getType() == TokenType.PARABERTO) ativacao();
             else if(currentToken.getType() == TokenType.COLCHEABERTO)
             {
                 match(TokenType.COLCHEABERTO);
@@ -217,6 +235,27 @@ public class Parser {
 
     private void ativacao() throws Exception {
         // <ativação> → ident ( <args> )
+        // TODO: Melhorar esse caso (observar fator)
+        match(TokenType.PARABERTO);
+        args();
+        match(TokenType.PARFECHADO);
+    }
+
+    private void args() throws Exception {
+        // <args> → <args-lista> | ε
+        if (currentToken.getType() == TokenType.PARABERTO || currentToken.getType() == TokenType.INTCONST
+                || currentToken.getType() == TokenType.IDENT) {
+            argsLista();
+        }
+    }
+
+    private void argsLista() throws Exception {
+        // <args-lista> → <args-lista>, <expressão> | <expressão>
+        expressao();
+        while (currentToken.getType() == TokenType.VIRGULA) {
+            match(TokenType.VIRGULA);
+            expressao();
+        }
     }
 
     private void var() throws Exception {
@@ -239,11 +278,6 @@ public class Parser {
                 token.getType() == TokenType.CHAVEABERTO;
     }
 
-    private boolean isDeclaracaoToken(Token token) {
-        // Verifica se o ‘token’ atual pode iniciar uma declaração.
-        return isTipoToken(token);
-    }
-
     private boolean isTipoToken(Token token) {
         // Verifica se o ‘token’ atual é um tipo (int ou void).
         return token.getType() == TokenType.INTTIPO || token.getType() == TokenType.VOIDTIPO;
@@ -254,6 +288,12 @@ public class Parser {
         return type == TokenType.MAIOR || type == TokenType.MENOR ||
                 type == TokenType.MAIORIGUAL || type == TokenType.MENORIGUAL ||
                 type == TokenType.IGUALDADE || type == TokenType.DIFERENTEIGUAL;
+    }
+
+    private void tipo() throws Exception {
+        // <tipo> → int | void
+        if(isTipoToken(currentToken)) match(currentToken.getType());
+        else throw new Exception("Erro de sintaxe: Tipo inválido");
     }
 
 }
