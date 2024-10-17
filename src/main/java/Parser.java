@@ -167,12 +167,35 @@ public class Parser {
 
     private void expressaoSimples() throws Exception {
         // <expressão simples> → <expressões soma> <op relacional> <expressões soma> | <expressões soma>
-//        expressoesSoma();
-//        if (isOpRelacional(currentToken.getType())) {
-//            TokenType op = currentToken.getType();
-//            match(op); // Consome o operador relacional (>, <, <=, >=, ==, !=)
-//            expressoesSoma(); // Avalia a segunda parte da expressão relacional
-//        }
+        expressoesSoma();
+        // Como pode ser vários operadores, usei um if para confirmar se é operador e consumi o ‘token’ atual
+        if (isOpRelacional(currentToken.getType())) {
+            match(currentToken.getType()); // Consome o operador relacional (>, <, <=, >=, ==, !=)
+            expressoesSoma();
+        }
+    }
+
+    private void expressoesSoma() throws Exception {
+        // <expressões soma> → <expressões soma> <op aditivo> <termo> | <termo>
+        termo();
+        while (currentToken.getType() == TokenType.SIMBOLOMAIS || currentToken.getType() == TokenType.SIMBOLOMENOS) {
+            match(currentToken.getType());
+            termo();
+        }
+    }
+
+    private void termo() throws Exception {
+        // <termo> → <termo> <op mult> <fator> | <fator>
+        fator();
+        while(currentToken.getType() == TokenType.ASTERISCO || currentToken.getType() == TokenType.BARRA) {
+            match(currentToken.getType());
+            fator();
+        }
+    }
+
+    private void fator() throws Exception {
+        // <fator> → ( <expressão> ) | <var> | <ativação> | contint
+
     }
 
     private void var() throws Exception {

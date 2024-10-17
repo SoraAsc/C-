@@ -64,6 +64,10 @@ public class Main {
                     System.out.println("VIRGULA" + "  Value = " + "\""+ t.getValue() + "\"");
                 else if (t.getType() == TokenType.PONTOVIRGULA)
                     System.out.println("PONTOVIRGULA" + "  Value = " + "\""+ t.getValue() + "\"");
+                else if (t.getType() == TokenType.SIMBOLOMAIS)
+                    System.out.println("SIMBOLOMAIS" + "  Value = " + "\""+ t.getValue() + "\"");
+                else if (t.getType() == TokenType.SIMBOLOMENOS)
+                    System.out.println("SIMBOLOMENOS" + "  Value = " + "\""+ t.getValue() + "\"");
                 else if (t.getType() == TokenType.PONTO)
                 {
                     System.out.println("PONTO" + "  Value = " + "\""+ t.getValue() + "\"");

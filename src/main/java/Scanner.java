@@ -75,6 +75,10 @@ public class Scanner
                             return new Token(TokenType.BARRA, tokenString.toString());
                         else if (currentChar == '*')
                             return new Token(TokenType.ASTERISCO, tokenString.toString());
+                        else if (currentChar == '+')
+                            return new Token(TokenType.SIMBOLOMAIS, tokenString.toString());
+                        else if (currentChar == '-')
+                            return new Token(TokenType.SIMBOLOMENOS, tokenString.toString());
                         else if ( (currentChar == ' '  ||
                                 currentChar == '\n' ||
                                 currentChar == '\t' ||
