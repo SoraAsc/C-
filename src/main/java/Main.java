@@ -80,9 +80,6 @@ public class Main {
         try {
             Parser parser = new Parser(tokens);
             parser.parse();
-        } catch (Exception e) {
-            e.printStackTrace();
-//            System.out.println(e.getMessage());
-        }
+        } catch (Exception e) { System.err.println(e.getMessage()); }
     }
 }

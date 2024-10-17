@@ -22,7 +22,7 @@ public class Parser {
             tokenIterator.previous(); // Retorna à posição anterior.
             return current;
         }
-        return null; // Retorna null se não há mais tokens.
+        return null; // Retorna null se não há mais ‘tokens’.
     }
 
     private void match(TokenType type) throws Exception {
@@ -152,8 +152,7 @@ public class Parser {
     }
 
     private void comandoSelecao() throws Exception {
-        // <comando seleção> → if (<expressão>) <comando> |
-        //                     if (<expressão>) <comando> else <comando>
+        // <comando seleção> → if (<expressão>) <comando> | if (<expressão>) <comando> else <comando>
         match(TokenType.IF);
         match(TokenType.PARABERTO);
         expressao();
@@ -228,23 +227,17 @@ public class Parser {
             expressao();
             match(TokenType.PARFECHADO);
         } else if (currentToken.getType() == TokenType.IDENT) {
-            // Não usei a função var, porque há um passo intermediário entre para detectar se é var ou ativação
-            // TODO: Melhorar esse caso
-            match(TokenType.IDENT);
-            if(currentToken.getType() == TokenType.PARABERTO) ativacao();
-            else if(currentToken.getType() == TokenType.COLCHEABERTO)
-            {
-                match(TokenType.COLCHEABERTO);
-                expressao();
-                match(TokenType.COLCHEFECHADO);
-            }
-        } else if (currentToken.getType() == TokenType.INTCONST)  match(TokenType.INTCONST);
+            Token nextToken = lookAheadToken();
+            if(nextToken != null && nextToken.getType() == TokenType.PARABERTO) ativacao();
+            else var();
+        }
+        else if (currentToken.getType() == TokenType.INTCONST) match(TokenType.INTCONST);
         else throw new Exception("Erro de sintaxe: Fator inválido.");
     }
 
     private void ativacao() throws Exception {
         // <ativação> → ident ( <args> )
-        // TODO: Melhorar esse caso (observar fator)
+        match(TokenType.IDENT);
         match(TokenType.PARABERTO);
         args();
         match(TokenType.PARFECHADO);
@@ -253,9 +246,7 @@ public class Parser {
     private void args() throws Exception {
         // <args> → <args-lista> | ε
         if (currentToken.getType() == TokenType.PARABERTO || currentToken.getType() == TokenType.INTCONST
-                || currentToken.getType() == TokenType.IDENT) {
-            argsLista();
-        }
+                || currentToken.getType() == TokenType.IDENT) argsLista();
     }
 
     private void argsLista() throws Exception {
@@ -304,5 +295,4 @@ public class Parser {
         if(isTipoToken(currentToken)) match(currentToken.getType());
         else throw new Exception("Erro de sintaxe: Tipo inválido");
     }
-
 }
